@@ -1,3 +1,5 @@
+# The initial state of the sudoku board.
+# TODO: Implement randomly generated starting boards
 board = [
 	[7, 8, 0, 4, 0, 0, 1, 2, 0],
 	[6, 0, 0, 0, 7, 5, 0, 0, 9],
@@ -10,25 +12,39 @@ board = [
 	[0, 4, 9, 2, 0, 6, 0, 0, 7]
 ]
 
+'''
+Attempt to solve the sudoku board. Will continously look for empty squares and 
+use a recursive backtracking algorithm to find the correct values.
+'''
 def solve(board):
 	empty_sq = find_empty_sq(board)
 
 	if not empty_sq:
+		# There are no more empty squares; the game is complete.
 		return True
 	else:
 		row_pos, col_pos = empty_sq
 
+	# Look for a valid value, and try to solve the board using that value.
 	for i in range(1, 10):
 		if board_is_valid(board, i, empty_sq):
 			board[row_pos][col_pos] = i
 
+			# Call this function again on the new board.
 			if solve(board):
 				return True
 
 			board[row_pos][col_pos] = 0
 
+	# None of the values tried (1-9) worked; we have reached a dead end. We need 
+	# to close this function, go back up the call stack and try a different 
+	# value.
 	return False
 
+'''
+Check if the board would be in a valid state if we entered value 'num' and 
+position 'pos'.
+'''
 def board_is_valid(board, num, pos):
 	row_pos, col_pos = pos
 
@@ -53,6 +69,9 @@ def board_is_valid(board, num, pos):
 
 	return True
 
+'''
+Format and print the sudoku board to the console.
+'''
 def print_board(board):
 	for i in range(len(board)):
 		if i % 3 == 0 and i != 0:
